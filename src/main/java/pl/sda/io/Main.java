@@ -1,38 +1,86 @@
 package pl.sda.io;
 
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         //To znamy - wypisuje na standardowe wyjscie:
         System.out.print("Witaj swiecie!");
+        Scanner scanner = new Scanner(System.in);
+
+        FileWriter fileWriter = new FileWriter("stars.txt");
+        for (int i = 0; i < 100; i++) {
+            fileWriter.write("*");
+            //fileWriter.flush(); // tego nie ma potrzeby robic
+            //chyba ze chcemy sie upewnic, ze w konkretnym momencie bufor zostanie zapisany do pliku
+        }
+        fileWriter.close();
+
+        FileReader fileReader = new FileReader("test.txt");
+        StringBuilder contents = new StringBuilder();
+        do {
+            char charRead = (char) fileReader.read();
+            contents.append(charRead);
+        } while (fileReader.ready());
+        System.out.println(contents);
+
+        BufferedReader bufferedReader = new BufferedReader(new FileReader("test.txt"));
+        System.out.println(bufferedReader.readLine());
+
+        //FileOutputStream jest niebuforowany, od razu zapisuje na dysk
+        FileOutputStream fos = new FileOutputStream("stream-write.txt");
+        char star = '*';
+        fos.write(star);
+        fos.write(star);
+        fos.write(star);
+        fos.write(star);
+
+        InputStream in = new FileInputStream("stars.txt");
+        System.out.println((char) in.read());
+
+        /*OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fos);
+        outputStreamWriter.write(star);
+        outputStreamWriter.write(star);
+        outputStreamWriter.write(star);
+        outputStreamWriter.write(star);
+        outputStreamWriter.close();*/
+
+
+        //TODO: File w kontekscie uprawnien, wlasciela
+
         //Readery/Writery:
         //Czytanie:
         System.out.println();
         //Pisanie:
         writerWriting();
         //Buforowany writer:
-        bufferedWritter();
+        //bufferedWritter();
         //Buforowany reader:
         //1. Jak to zrobic?
         //2. Czy to sie łączy jakoś z czytaniem z konsoli?
         //czym jest System.in;
         //Readerow uzywa sie prawie tak samo jak streamow IO
         //Skaner
-        scanner();
+        //scanner();
         //3. skaner + czytanie z konsoli?
         //Java NIO
+        //new BufferedReader(new InputStreamReader(new FileInputStream("test.txt")));
+
+        BufferedReader bufferedReader1 = Files.newBufferedReader(Path.of("test.txt"));
+        System.out.println(bufferedReader1.readLine());
+
+        System.out.println(Files.readString(Path.of("stars.txt")));
+
+
+        System.out.println("");
+
         //Path:
-        printFilenameAndFullPath();
+        //printFilenameAndFullPath();
         //Laczenie sciezek:
-        concatPath();
+        //concatPath();
         //Files:
         //Files.createDirectory()
         //Files.lines();
@@ -69,8 +117,10 @@ public class Main {
     }
 
     private static void writerWriting() throws IOException {
+        //TODO: File
         FileWriter writer = new FileWriter("test-write.txt");
         writer.write("Test ala ma kota");
+        writer.flush();
         writer.close();//Bardzo wazne!
     }
 
